@@ -52,7 +52,7 @@ export const GridContent = styled(ScrollBarY)`
 export const NoGridContent = styled(ScrollBarY)`
   width: 850px;
   margin: 0 auto;
-  margin-top: 20px;
+  height: 400px;
 `;
 
 export const Div = styled.div`
