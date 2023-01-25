@@ -1,4 +1,5 @@
 import { getPostLikeList } from 'api/post';
+import { USEINFINITEQUERY_OPTION } from 'constants/queryOption';
 import { useInfiniteQuery } from 'react-query';
 
 const usePostLikeList = (postId, size) => {
@@ -6,6 +7,7 @@ const usePostLikeList = (postId, size) => {
     getNextPageParam: (lastPage) => {
       return lastPage.cursor;
     },
+    select: USEINFINITEQUERY_OPTION.SELECT,
   });
 };
 

@@ -78,6 +78,7 @@ const Post = () => {
     setLikeCount(postData?.data.likeCount);
   }, [postData, userId]);
 
+  console.log(likeCount);
   return (
     <>
       <PostLikeListModal
@@ -178,13 +179,12 @@ const Post = () => {
                   </span>
                   <Style.LikeCount
                     onClick={
-                      likeCount === 0 ? toggleLiked : toggleLikeListModal
+                      likeCount && likeCount === 0
+                        ? toggleLiked
+                        : toggleLikeListModal
                     }
                   >
-                    {LikeCount(
-                      likeUserData?.pages[0].result[0]?.nickname,
-                      likeCount
-                    )}
+                    {LikeCount(likeUserData[0].nickname, likeCount)}
                   </Style.LikeCount>
                   <div>
                     <CommentIcon />
