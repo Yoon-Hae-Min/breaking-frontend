@@ -6,6 +6,9 @@ const useMainFeedOption = (sort, option) => {
     getNextPageParam: (lastPage) => {
       return lastPage.cursor;
     },
+    select: (data) => {
+      return data.pages.reduce((acc, { result }) => [...result, ...acc], []);
+    },
   });
 };
 

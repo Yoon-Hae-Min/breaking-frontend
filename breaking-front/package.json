@@ -16,6 +16,8 @@
     "react-query": "^3.39.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-virtualized": "^9.22.3",
+    "react-virtualized-auto-sizer": "^1.0.7",
     "react-window": "^1.8.8",
     "react-window-infinite-loader": "^1.0.8",
     "styled-components": "^5.3.5",
