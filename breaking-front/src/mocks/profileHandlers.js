@@ -44,8 +44,24 @@ const bookmarkedContents = [
 
 const followerList = [
   {
-    cursorId: 0,
-    ...NORMAL_USER,
+    cursorId: 1,
+    ...NO_STATUSMSG_USER,
+  },
+  {
+    cursorId: 2,
+    ...NO_PROFILEIMGURL_USER,
+  },
+  {
+    cursorId: 3,
+    ...NO_POSTCOUNT_USER,
+  },
+  {
+    cursorId: 4,
+    ...NO_FOLLOW_USER,
+  },
+  {
+    cursorId: 5,
+    ...FOLLOWING_USER,
   },
   {
     cursorId: 1,
