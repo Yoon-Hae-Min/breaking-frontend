@@ -2,7 +2,7 @@ import useFollowerList from 'pages/Profile/Profile/hooks/queries/useFollowerList
 import useFollowingList from 'pages/Profile/Profile/hooks/queries/useFollowingList';
 import React from 'react';
 import PropTypes from 'prop-types';
-import FollowModal from '../FollowModal/FollowModal';
+import ProfileCardsModal from '../../../../../components/ProfileCardsModal/ProfileCardsModal';
 
 const ProfileFollowModal = ({
   isFollowerModalOpen,
@@ -13,20 +13,18 @@ const ProfileFollowModal = ({
 }) => {
   return (
     <>
-      <FollowModal
+      <ProfileCardsModal
         title="팔로워"
-        userId={userId}
-        toggleFollowModal={toggleFollowerModal}
-        isFollowModalOpen={isFollowerModalOpen}
-        infiniteQuery={useFollowerList}
+        toggleModal={toggleFollowerModal}
+        isModalOpen={isFollowerModalOpen}
+        infiniteQueryResult={useFollowerList(userId)}
         isPermission={true}
       />
-      <FollowModal
+      <ProfileCardsModal
         title="팔로잉"
-        userId={userId}
-        toggleFollowModal={toggleFollowingModal}
-        isFollowModalOpen={isFollowingModalOpen}
-        infiniteQuery={useFollowingList}
+        toggleModal={toggleFollowingModal}
+        isModalOpen={isFollowingModalOpen}
+        infiniteQueryResult={useFollowingList(userId)}
         isPermission={true}
       />
     </>
