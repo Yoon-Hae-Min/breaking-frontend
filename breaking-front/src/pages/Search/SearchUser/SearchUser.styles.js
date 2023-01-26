@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+export const UserCardWrapper = styled.div`
+  margin-top: 10px;
+`;
+
 export const SearchUserLayout = styled.div`
   margin: 40px 0;
   > * {
