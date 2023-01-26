@@ -1,4 +1,5 @@
 import { getSearch } from 'api/search';
+import { USEINFINITEQUERY_OPTION } from 'constants/queryOption';
 import { useInfiniteQuery } from 'react-query';
 
 const useSearch = (content, size, sort, option) =>
@@ -8,5 +9,6 @@ const useSearch = (content, size, sort, option) =>
     getNextPageParam: (lastPage) => {
       return lastPage.cursor;
     },
+    select: USEINFINITEQUERY_OPTION.SELECT,
   });
 export default useSearch;

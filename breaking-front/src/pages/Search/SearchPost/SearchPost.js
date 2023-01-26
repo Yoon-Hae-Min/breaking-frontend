@@ -1,17 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import * as Style from 'pages/Search/SearchPost/SearchPost.styles';
 import SearchHeader from 'pages/Search/components/SearchHeader/SearchHeader';
 import Feed from 'components/Feed/Feed';
-import { UserInformationContext } from 'providers/UserInformationProvider';
 import useSearch from 'pages/Search/hooks/queries/useSearch';
 import { FeedSkeleton } from 'components/Skeleton/Skeleton';
-import InfiniteTargetDiv from 'components/InfiniteTargetDiv/InfiniteTargetDiv';
-import useInfiniteScroll from 'hooks/useInfiniteScroll';
 import useConvertURLQuery from 'pages/Search/hooks/useConvertURLQuery';
 import NoData from 'components/NoData/NoData';
+import InfiniteGridWrapper from 'components/InfiniteGridWrapper/InfiniteGridWrapper';
+import PropTypes from 'prop-types';
 
 const SearchPost = () => {
-  const { userId } = useContext(UserInformationContext);
   const currentQuery = useConvertURLQuery();
 
   const [sort, setSort] = useState('chronological');
@@ -19,53 +17,63 @@ const SearchPost = () => {
 
   const {
     data: searchPostResult,
-    isLoading: searchPostLoading,
     fetchNextPage: FetchNextSearchPost,
     isFetching: isFetchSearchPost,
+    hasNextPage: hasNextSearchPost,
   } = useSearch(currentQuery, 10, sort, option);
 
-  const { targetRef } = useInfiniteScroll(
-    searchPostResult,
-    FetchNextSearchPost
-  );
+  const Feeds = ({ isRowLoaded, rowIndex, columnIndex, style, key }) => {
+    return !isRowLoaded(rowIndex * 2 + columnIndex) ? (
+      <Style.FeedWrapper style={style} key={key}>
+        <FeedSkeleton />
+      </Style.FeedWrapper>
+    ) : (
+      <Style.FeedWrapper style={style} key={key}>
+        <Feed
+          feedData={
+            searchPostResult && searchPostResult[rowIndex * 2 + columnIndex]
+          }
+          key={searchPostResult[rowIndex * 2 + columnIndex]?.postId}
+        />
+      </Style.FeedWrapper>
+    );
+  };
+
+  Feeds.propTypes = {
+    isRowLoaded: PropTypes.func,
+    rowIndex: PropTypes.number,
+    columnIndex: PropTypes.number,
+    style: PropTypes.object,
+    key: PropTypes.string,
+  };
+
   return (
     <>
       <SearchHeader focusTab={1} />
-
       <Style.PostFilter
         setSort={setSort}
         option={option}
         setOption={setOption}
         queryKey="search"
       />
-      {searchPostLoading && (
-        <Style.PostResultList>
-          <FeedSkeleton />
-          <FeedSkeleton />
-          <FeedSkeleton />
-          <FeedSkeleton />
-        </Style.PostResultList>
-      )}
-
-      {searchPostResult?.pages[0].result.length === 0 ? (
-        <Style.NoDataContainer>
-          <NoData message="검색결과 없음" />
-        </Style.NoDataContainer>
-      ) : (
-        <>
-          <Style.PostResultList>
-            {searchPostResult?.pages.map((page) =>
-              page.result.map((feed) => (
-                <Feed feedData={feed} key={feed.postId} userId={userId} />
-              ))
-            )}
-          </Style.PostResultList>
-          <InfiniteTargetDiv
-            targetRef={targetRef}
-            isFetching={isFetchSearchPost}
-            height="80px"
-          />
-        </>
+      {searchPostResult && (
+        <InfiniteGridWrapper
+          hasNextPage={hasNextSearchPost}
+          data={searchPostResult}
+          isNextPageLoading={isFetchSearchPost}
+          loadNextPage={FetchNextSearchPost}
+          totalWidth={950}
+          rowHeight={520}
+          columnWidth={475}
+          columnCount={2}
+          itemComponent={Feeds}
+          isUseWindowScroll={true}
+          noContentRenderer={() => (
+            <Style.NoDataContainer>
+              <NoData message="검색결과 없음" />
+            </Style.NoDataContainer>
+          )}
+        />
       )}
     </>
   );

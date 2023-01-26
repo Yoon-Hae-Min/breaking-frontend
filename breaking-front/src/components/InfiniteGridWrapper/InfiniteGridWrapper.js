@@ -17,8 +17,11 @@ const InfiniteGridWrapper = ({
   columnCount,
   itemComponent,
   isUseWindowScroll = false,
+  noContentRenderer,
 }) => {
-  const rowCount = hasNextPage ? data.length / 2 + 1 : data.length / 2 - 1;
+  const rowCount = hasNextPage
+    ? data.length / columnCount + 1
+    : data.length / columnCount - 1;
   // 다음페이지가 있다면 로딩창(스켈레톤 UI)을 생성해야함 (+2개 생성)
   // react-query는 마지막 데이터를 가져왔는데 값이 없으면 hasNextPage가 false가 되므로 0이 되므로 한번 더 가져온 꼴이 되니 -2로 조정해 주어야함
   const loadMoreRows = isNextPageLoading ? () => {} : loadNextPage;
@@ -45,7 +48,7 @@ const InfiniteGridWrapper = ({
           // 2차원을 grid를 1차원으로 변환
           const stopIndex = rowStopIndex * columnStopIndex;
 
-          if (stopIndex >= data.length / 2 - 2)
+          if (stopIndex >= data.length / columnCount - 1)
             // 브라우저가 보여지는 곳이 바닥보다 1칸 위라면 다음데이터를 불러옴
             onRowsRendered({
               startIndex,
@@ -54,35 +57,38 @@ const InfiniteGridWrapper = ({
         };
         return isUseWindowScroll ? (
           // 브라우저의 window 스크롤을 사용하려면 WindowScroller wrapper가 있어야하고 사용하지 않으려면 wrapper가 필요없음
-          <AutoSizer className="autoSizer">
-            {({ height: rowDefaultHeight, width }) => (
-              <WindowScroller class="windowScroller">
-                {({ height, scrollTop }) => {
-                  return (
-                    <Grid
-                      autoHeight={isUseWindowScroll}
-                      width={totalWidth ?? width}
-                      height={totalHeight ?? height}
-                      columnWidth={columnWidth}
-                      rowHeight={rowHeight ?? rowDefaultHeight}
-                      rowCount={rowCount}
-                      columnCount={columnCount}
-                      scrollTop={scrollTop}
-                      onSectionRendered={onSectionRendered}
-                      cellRenderer={({ rowIndex, columnIndex, style, key }) =>
-                        itemComponent({
-                          isRowLoaded,
-                          rowIndex,
-                          columnIndex,
-                          style,
-                          key,
-                        })
-                      }
-                    />
-                  );
-                }}
-              </WindowScroller>
-            )}
+          <AutoSizer className="autosizer">
+            {({ height: rowDefaultHeight, width }) => {
+              return (
+                <WindowScroller>
+                  {({ height, scrollTop }) => {
+                    return (
+                      <Grid
+                        noContentRenderer={noContentRenderer}
+                        autoHeight={isUseWindowScroll}
+                        width={totalWidth ?? width}
+                        height={totalHeight ?? height}
+                        columnWidth={columnWidth}
+                        rowHeight={rowHeight ?? rowDefaultHeight}
+                        rowCount={rowCount}
+                        columnCount={columnCount}
+                        scrollTop={scrollTop}
+                        onSectionRendered={onSectionRendered}
+                        cellRenderer={({ rowIndex, columnIndex, style, key }) =>
+                          itemComponent({
+                            isRowLoaded,
+                            rowIndex,
+                            columnIndex,
+                            style,
+                            key,
+                          })
+                        }
+                      />
+                    );
+                  }}
+                </WindowScroller>
+              );
+            }}
           </AutoSizer>
         ) : (
           <Grid
@@ -121,6 +127,7 @@ InfiniteGridWrapper.propTypes = {
   columnCount: PropTypes.number,
   itemComponent: PropTypes.func,
   isUseWindowScroll: PropTypes.bool,
+  noContentRenderer: PropTypes.object,
 };
 
 export default InfiniteGridWrapper;
