@@ -44,10 +44,9 @@ const InfiniteGridWrapper = ({
           rowStopIndex,
           columnStopIndex,
         }) => {
-          const startIndex = rowStartIndex * columnStopIndex;
+          const startIndex = rowStartIndex;
           // 2차원을 grid를 1차원으로 변환
-          const stopIndex = rowStopIndex * columnStopIndex;
-
+          const stopIndex = rowStopIndex;
           if (stopIndex >= data.length / columnCount - 1)
             // 브라우저가 보여지는 곳이 바닥보다 1칸 위라면 다음데이터를 불러옴
             onRowsRendered({
