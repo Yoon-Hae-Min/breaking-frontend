@@ -5,7 +5,6 @@ import Feed from 'components/Feed/Feed';
 import useSearchHashtag from 'pages/Search/hooks/queries/useSearchHashtag';
 import { FeedSkeleton } from 'components/Skeleton/Skeleton';
 import useConvertURLQuery from 'pages/Search/hooks/useConvertURLQuery';
-import NoData from 'components/NoData/NoData';
 import InfiniteGridWrapper from 'components/InfiniteGridWrapper/InfiniteGridWrapper';
 import PropTypes from 'prop-types';
 
@@ -69,11 +68,6 @@ const SearchHashtag = () => {
           columnCount={2}
           itemComponent={Feeds}
           isUseWindowScroll={true}
-          noContentRenderer={() => (
-            <Style.NoDataContainer>
-              <NoData message="검색결과 없음" />
-            </Style.NoDataContainer>
-          )}
         />
       )}
     </>

@@ -5,7 +5,6 @@ import * as Style from 'pages/Search/SearchUser//SearchUser.styles';
 import SearchUserResultCardSkeleton from 'pages/Search/SearchUser/components/SearchUserResultCardSkeleton/SearchUserResultCardSkeleton';
 import useSearchUser from 'pages/Search/hooks/queries/useSearchUser';
 import useConvertURLQuery from 'pages/Search/hooks/useConvertURLQuery';
-import NoData from 'components/NoData/NoData';
 import InfiniteGridWrapper from 'components/InfiniteGridWrapper/InfiniteGridWrapper';
 import PropTypes from 'prop-types';
 
@@ -48,7 +47,6 @@ const SearchUser = () => {
     key: PropTypes.string,
   };
 
-  console.log(searchUserResult);
   return (
     <>
       <SearchHeader focusTab={3} />
@@ -63,13 +61,11 @@ const SearchUser = () => {
           columnCount={1}
           itemComponent={UserResultCard}
           isUseWindowScroll={true}
-          noContentRenderer={() => (
-            <Style.NoDataContainer>
-              <NoData message="검색결과 없음" />
-            </Style.NoDataContainer>
-          )}
         />
       )}
+      {/* <Style.NoDataContainer>
+              <NoData message="검색결과 없음" />
+            </Style.NoDataContainer> */}
     </>
   );
 };

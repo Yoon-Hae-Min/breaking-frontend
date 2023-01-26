@@ -17,7 +17,6 @@ const InfiniteGridWrapper = ({
   columnCount,
   itemComponent,
   isUseWindowScroll = false,
-  noContentRenderer,
 }) => {
   const rowCount = hasNextPage
     ? data.length / columnCount + 1
@@ -63,7 +62,6 @@ const InfiniteGridWrapper = ({
                   {({ height, scrollTop }) => {
                     return (
                       <Grid
-                        noContentRenderer={noContentRenderer}
                         autoHeight={isUseWindowScroll}
                         width={totalWidth ?? width}
                         height={totalHeight ?? height}
@@ -126,7 +124,6 @@ InfiniteGridWrapper.propTypes = {
   columnCount: PropTypes.number,
   itemComponent: PropTypes.func,
   isUseWindowScroll: PropTypes.bool,
-  noContentRenderer: PropTypes.object,
 };
 
 export default InfiniteGridWrapper;
