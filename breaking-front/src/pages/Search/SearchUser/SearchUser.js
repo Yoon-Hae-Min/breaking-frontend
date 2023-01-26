@@ -4,57 +4,68 @@ import SearchUserResultCard from 'pages/Search/SearchUser/components/SearchUserR
 import * as Style from 'pages/Search/SearchUser//SearchUser.styles';
 import SearchUserResultCardSkeleton from 'pages/Search/SearchUser/components/SearchUserResultCardSkeleton/SearchUserResultCardSkeleton';
 import useSearchUser from 'pages/Search/hooks/queries/useSearchUser';
-import InfiniteTargetDiv from 'components/InfiniteTargetDiv/InfiniteTargetDiv';
-import useInfiniteScroll from 'hooks/useInfiniteScroll';
 import useConvertURLQuery from 'pages/Search/hooks/useConvertURLQuery';
-import NoData from 'components/NoData/NoData';
+import InfiniteGridWrapper from 'components/InfiniteGridWrapper/InfiniteGridWrapper';
+import PropTypes from 'prop-types';
 
 const SearchUser = () => {
   const currentQuery = useConvertURLQuery();
 
   const {
     data: searchUserResult,
-    isLoading: isSearchUserLoading,
     isFetching: isSearchUserFetching,
     fetchNextPage: FetchNextSearchUser,
+    hasNextPage: hasNextSearchUser,
   } = useSearchUser(currentQuery, 10);
 
-  const { targetRef } = useInfiniteScroll(
-    searchUserResult,
-    FetchNextSearchUser
-  );
+  const UserResultCard = ({
+    isRowLoaded,
+    rowIndex,
+    columnIndex,
+    style,
+    key,
+  }) => {
+    return !isRowLoaded(rowIndex + columnIndex) ? (
+      <Style.UserCardWrapper style={style} key={key}>
+        <SearchUserResultCardSkeleton />
+      </Style.UserCardWrapper>
+    ) : (
+      <Style.UserCardWrapper style={style} key={key}>
+        <SearchUserResultCard
+          user={searchUserResult[rowIndex + columnIndex]}
+          key={searchUserResult[rowIndex + columnIndex]?.userId}
+        />
+      </Style.UserCardWrapper>
+    );
+  };
+
+  UserResultCard.propTypes = {
+    isRowLoaded: PropTypes.func,
+    rowIndex: PropTypes.number,
+    columnIndex: PropTypes.number,
+    style: PropTypes.object,
+    key: PropTypes.string,
+  };
+
   return (
     <>
       <SearchHeader focusTab={3} />
-      {isSearchUserLoading && (
-        <Style.SearchUserLayout>
-          <SearchUserResultCardSkeleton />
-          <SearchUserResultCardSkeleton />
-          <SearchUserResultCardSkeleton />
-          <SearchUserResultCardSkeleton />
-          <SearchUserResultCardSkeleton />
-          <SearchUserResultCardSkeleton />
-        </Style.SearchUserLayout>
+      {searchUserResult && (
+        <InfiniteGridWrapper
+          hasNextPage={hasNextSearchUser}
+          data={searchUserResult}
+          isNextPageLoading={isSearchUserFetching}
+          loadNextPage={FetchNextSearchUser}
+          rowHeight={160}
+          columnWidth={950}
+          columnCount={1}
+          itemComponent={UserResultCard}
+          isUseWindowScroll={true}
+        />
       )}
-      {searchUserResult?.pages[0].result.length === 0 ? (
-        <Style.NoDataContainer>
-          <NoData message="검색결과 없음" />
-        </Style.NoDataContainer>
-      ) : (
-        <>
-          <Style.SearchUserLayout>
-            {searchUserResult?.pages.map((page) =>
-              page.result.map((user) => (
-                <SearchUserResultCard user={user} key={user.userId} />
-              ))
-            )}
-          </Style.SearchUserLayout>
-          <InfiniteTargetDiv
-            targetRef={targetRef}
-            isFetching={isSearchUserFetching}
-          />
-        </>
-      )}
+      {/* <Style.NoDataContainer>
+              <NoData message="검색결과 없음" />
+            </Style.NoDataContainer> */}
     </>
   );
 };
