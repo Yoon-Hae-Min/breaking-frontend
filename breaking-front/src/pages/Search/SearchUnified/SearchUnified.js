@@ -33,6 +33,8 @@ const SearchUnified = () => {
   const viewAllPostClick = () => {
     navigate(PAGE_PATH.SEARCH_POST + `?query=${currentQuery}`);
   };
+  console.log(searchUserResult);
+  console.log(searchPostResult);
 
   return (
     <>
@@ -48,18 +50,16 @@ const SearchUnified = () => {
             <UserCardSkeleton />
           </Style.UserInformationList>
         )}
-        {searchUserResult?.pages[0].result.length === 0 ? (
+        {searchUserResult?.length === 0 ? (
           <Style.NoDataContainer>
             <NoData message="검색결과 없음" />
           </Style.NoDataContainer>
         ) : (
           <>
             <Style.UserInformationList>
-              {searchUserResult?.pages.map((page) =>
-                page.result.map((user) => (
-                  <UserCard user={user} key={user.userId} isLogin={isLogin} />
-                ))
-              )}
+              {searchUserResult?.map((user) => (
+                <UserCard user={user} key={user.userId} isLogin={isLogin} />
+              ))}
             </Style.UserInformationList>
             <Style.ViewAllButton onClick={viewAllUserClick}>
               모두 보기
@@ -77,18 +77,16 @@ const SearchUnified = () => {
             <FeedSkeleton />
           </Style.PostResultList>
         )}
-        {searchPostResult?.pages[0].result.length === 0 ? (
+        {searchPostResult?.length === 0 ? (
           <Style.NoDataContainer>
             <NoData message="검색결과 없음" />
           </Style.NoDataContainer>
         ) : (
           <>
             <Style.PostResultList>
-              {searchPostResult?.pages.map((page) =>
-                page.result.map((feed) => (
-                  <Feed feedData={feed} key={feed.postId} userId={userId} />
-                ))
-              )}
+              {searchPostResult?.map((feed) => (
+                <Feed feedData={feed} key={feed.postId} userId={userId} />
+              ))}
             </Style.PostResultList>
             <Style.ViewAllButton onClick={viewAllPostClick}>
               모두 보기
