@@ -1,4 +1,5 @@
 import { getFeeds } from 'api/mainFeed';
+import { USEINFINITEQUERY_OPTION } from 'constants/queryOption';
 import { useInfiniteQuery } from 'react-query';
 
 const useMainFeedOption = (sort, option) => {
@@ -6,9 +7,7 @@ const useMainFeedOption = (sort, option) => {
     getNextPageParam: (lastPage) => {
       return lastPage.cursor;
     },
-    select: (data) => {
-      return data.pages.reduce((acc, { result }) => [...result, ...acc], []);
-    },
+    select: USEINFINITEQUERY_OPTION.SELECT,
   });
 };
 

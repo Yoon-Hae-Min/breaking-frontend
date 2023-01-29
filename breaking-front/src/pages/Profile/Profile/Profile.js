@@ -22,12 +22,12 @@ import { useQueryClient } from 'react-query';
 const Profile = () => {
   let { id: userId } = useParams();
   const queryClient = useQueryClient();
-  const follow = useFollow({
+  const follow = useFollow(null, {
     onSuccess: () => {
       queryClient.invalidateQueries('profile');
     },
   });
-  const unFollow = useUnFollow({
+  const unFollow = useUnFollow(null, {
     onSuccess: () => {
       queryClient.invalidateQueries('profile');
     },

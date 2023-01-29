@@ -4,45 +4,26 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { UserInformationContext } from 'providers/UserInformationProvider';
-import { useMutation, useQueryClient } from 'react-query';
-import { deleteUnFollow, postFollow } from 'api/profile';
 import { FollowCardSkeleton } from 'components/Skeleton/Skeleton';
 import FollowCard from 'components/FollowCard/FollowCard';
 import { PAGE_PATH } from 'constants/path';
 
 const ProfileCardsModal = ({
   title,
+  FollowMutation,
+  UnFollowMutation,
+  infiniteQuery,
   toggleModal,
   isModalOpen,
-  infiniteQueryResult,
-  isPermission,
 }) => {
   const navigate = useNavigate();
   const userData = useContext(UserInformationContext);
-  const queryClient = useQueryClient();
   const {
     data: FollowData,
     isFetching: isFollowListFetching,
     fetchNextPage: FetchNextFollowList,
     hasNextPage: isFollowListHasNextPage,
-  } = infiniteQueryResult;
-
-  const UnFollowMutation = useMutation(deleteUnFollow, {
-    onSuccess: (data, userId) => {
-      queryClient.invalidateQueries('profile');
-    },
-    onError: () => {
-      //에러처리
-    },
-  });
-  const FollowMutation = useMutation(postFollow, {
-    onSuccess: (data, userId) => {
-      queryClient.invalidateQueries('profile');
-    },
-    onError: () => {
-      //에러처리
-    },
-  });
+  } = infiniteQuery;
 
   const Cards = ({ isRowLoaded, rowIndex, columnIndex, style, key }) => {
     return !isRowLoaded(rowIndex * 2 + columnIndex) ? (
@@ -51,27 +32,30 @@ const ProfileCardsModal = ({
       </div>
     ) : (
       <div style={style} key={key}>
-        <FollowCard
-          cardClick={() => {
-            toggleModal();
-            navigate(
-              PAGE_PATH.PROFILE(FollowData[rowIndex * 2 + columnIndex].userId)
-            );
-          }}
-          isPermission={
-            FollowData[rowIndex * 2 + columnIndex].userId !== userData.userId &&
-            userData.isLogin &&
-            isPermission
-          }
-          profileData={FollowData[rowIndex * 2 + columnIndex]}
-          key={`follow-${FollowData[rowIndex * 2 + columnIndex].userId}`}
-          FollowMutation={FollowMutation}
-          UnFollowMutation={UnFollowMutation}
-        />
+        {FollowData[rowIndex * 2 + columnIndex] && (
+          <FollowCard
+            cardClick={() => {
+              toggleModal();
+              navigate(
+                PAGE_PATH.PROFILE(FollowData[rowIndex * 2 + columnIndex].userId)
+              );
+            }}
+            isPermission={
+              FollowData[rowIndex * 2 + columnIndex].userId !==
+                userData.userId &&
+              userData.isLogin &&
+              !!FollowMutation &&
+              !!UnFollowMutation
+            }
+            profileData={FollowData[rowIndex * 2 + columnIndex]}
+            key={`follow-${FollowData[rowIndex * 2 + columnIndex].userId}`}
+            FollowMutation={FollowMutation}
+            UnFollowMutation={UnFollowMutation}
+          />
+        )}
       </div>
     );
   };
-
   Cards.propTypes = {
     isRowLoaded: PropTypes.func,
     rowIndex: PropTypes.number,
@@ -108,10 +92,11 @@ const ProfileCardsModal = ({
 
 ProfileCardsModal.propTypes = {
   title: PropTypes.string,
-  toggleModal: PropTypes.func,
   isModalOpen: PropTypes.bool,
-  infiniteQueryResult: PropTypes.object,
-  isPermission: PropTypes.bool,
+  UnFollowMutation: PropTypes.object,
+  FollowMutation: PropTypes.object,
+  toggleModal: PropTypes.func,
+  infiniteQuery: PropTypes.object,
 };
 
 export default ProfileCardsModal;

@@ -19,17 +19,16 @@ const InfiniteGridWrapper = ({
   isUseWindowScroll = false,
 }) => {
   const rowCount = hasNextPage
-    ? data.length / columnCount + 1
-    : data.length / columnCount - 1;
-  // 다음페이지가 있다면 로딩창(스켈레톤 UI)을 생성해야함 (+2개 생성)
-  // react-query는 마지막 데이터를 가져왔는데 값이 없으면 hasNextPage가 false가 되므로 0이 되므로 한번 더 가져온 꼴이 되니 -2로 조정해 주어야함
+    ? Math.round(data.length / columnCount) + 1
+    : Math.round(data.length / columnCount);
+  // 다음페이지가 있다면 로딩창(스켈레톤 UI)을 생성해야함
+  // react-query는 마지막 데이터를 가져왔는데 값이 없으면 현재 길이값이 fixed됨
   const loadMoreRows = isNextPageLoading ? () => {} : loadNextPage;
   // 데이터를 불러오는 도중에는 Fetch가 실행되지 않도록 막음
 
   const isRowLoaded = (index) => !hasNextPage || index < data.length;
   // 해당 index가 받아온 데이터의 범위안에 들어가는 확인
   // 받아온 데이터보다 크면 false를 return
-
   return (
     <InfiniteLoader
       rowCount={rowCount}
