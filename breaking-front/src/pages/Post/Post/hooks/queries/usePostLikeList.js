@@ -2,8 +2,9 @@ import { getPostLikeList } from 'api/post';
 import { USEINFINITEQUERY_OPTION } from 'constants/queryOption';
 import { useInfiniteQuery } from 'react-query';
 
-const usePostLikeList = (postId, size) => {
-  return useInfiniteQuery(['postLikeList', postId, size], getPostLikeList, {
+const usePostLikeList = (queryKey) => {
+  console.log(queryKey);
+  return useInfiniteQuery(queryKey, getPostLikeList, {
     getNextPageParam: (lastPage) => {
       return lastPage.cursor;
     },

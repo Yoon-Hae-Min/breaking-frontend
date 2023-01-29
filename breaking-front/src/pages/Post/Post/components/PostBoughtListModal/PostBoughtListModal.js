@@ -9,8 +9,7 @@ const PostBoughtListModal = ({ postId, isOpen, closeClick }) => {
       title="구매자 목록"
       toggleModal={closeClick}
       isModalOpen={isOpen}
-      infiniteQueryResult={usePostBoughtList(postId)}
-      isPermission={false}
+      infiniteQuery={usePostBoughtList(postId)}
     />
   );
 };

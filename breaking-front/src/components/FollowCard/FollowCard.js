@@ -18,11 +18,10 @@ export default function FollowCard({
   const [isFollowing, setIsFollowing] = useState(profileData.isFollowing);
 
   const unFollowClick = () => {
-    if (!UnFollowMutation.isLoading) {
+    if (UnFollowMutation && !UnFollowMutation.isLoading) {
       UnFollowMutation.mutate(profileData.userId, {
         onSuccess: () => {
           setIsLoading(false);
-          setIsFollowing(false);
         },
       });
       setIsLoading(true);
@@ -30,11 +29,10 @@ export default function FollowCard({
   };
 
   const followClick = () => {
-    if (!FollowMutation.isLoading) {
+    if (FollowMutation && !FollowMutation.isLoading) {
       FollowMutation.mutate(profileData.userId, {
         onSuccess: () => {
           setIsLoading(false);
-          setIsFollowing(true);
         },
       });
       setIsLoading(true);

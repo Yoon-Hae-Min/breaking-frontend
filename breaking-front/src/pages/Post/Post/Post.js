@@ -40,7 +40,7 @@ const Post = () => {
   const [likeCount, setLikeCount] = useState(0);
 
   const { data: postData, isLoading: isPostDataLoading } = usePost(postId);
-  const { data: likeUserData } = usePostLikeList(postId, 1);
+  const { data: likeUserData } = usePostLikeList(['postLikeList', postId, 1]);
 
   const { mutate: PostLike } = usePostLike();
   const { mutate: DeletePostLike } = useDeletePostLike();
@@ -78,7 +78,6 @@ const Post = () => {
     setLikeCount(postData?.data.likeCount);
   }, [postData, userId]);
 
-  console.log(likeCount);
   return (
     <>
       <PostLikeListModal
@@ -184,7 +183,10 @@ const Post = () => {
                         : toggleLikeListModal
                     }
                   >
-                    {LikeCount(likeUserData[0].nickname, likeCount)}
+                    {LikeCount(
+                      likeUserData && likeUserData[0].nickname,
+                      likeCount
+                    )}
                   </Style.LikeCount>
                   <div>
                     <CommentIcon />

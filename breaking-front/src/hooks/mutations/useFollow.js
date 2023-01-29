@@ -1,8 +1,14 @@
 import { postFollow } from 'api/profile';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
+import { toggleIsFollowingField } from './useUnFollow';
 
-const useFollow = (option) => {
-  return useMutation(postFollow, option);
+const useFollow = (queryKey, option) => {
+  const queryClient = useQueryClient();
+  return useMutation(postFollow, {
+    onSuccess: (data, followId) =>
+      queryKey && toggleIsFollowingField({ queryClient, followId, queryKey }),
+    ...option,
+  });
 };
 
 export default useFollow;

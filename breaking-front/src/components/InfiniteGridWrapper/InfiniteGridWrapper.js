@@ -42,7 +42,6 @@ const InfiniteGridWrapper = ({
           rowStopIndex,
           columnStopIndex,
         }) => {
-          console.log(rowStartIndex, rowStopIndex, columnStopIndex);
           const startIndex = rowStartIndex;
           // 2차원을 grid를 1차원으로 변환
           const stopIndex = rowStopIndex;
